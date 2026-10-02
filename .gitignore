@@ -1,0 +1,8 @@
+results/
+results_test/
+work/
+.nextflow/
+.nextflow.log*
+singularity_cache/
+*.pyc
+__pycache__/

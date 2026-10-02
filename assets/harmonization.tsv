@@ -1,0 +1,16 @@
+gene	tool	tool_allele	canonical_allele	relation	note	curator	date
+GSTM1	pypgx	*0	*0	deletion	PyPGx null genotype	seed	2026-10-02
+GSTM1	stellarpgx	del	*0	deletion	StellarPGx deletion label	seed	2026-10-02
+GSTM1	*	-	*0	deletion	dash used by some callers for null	seed	2026-10-02
+GSTM1	*	*2	*0	deletion	some tools label the deletion as *2; treat as null	seed	2026-10-02
+GSTM1	*	present	*1	synonym	non-deletion / present	seed	2026-10-02
+GSTT1	*	del	*0	deletion	GSTT1 null/deletion	seed	2026-10-02
+GSTT1	*	-	*0	deletion		seed	2026-10-02
+GSTT1	*	present	*1	synonym		seed	2026-10-02
+CYP2D6	cyrius	*5	*5	deletion	Cyrius gene deletion	seed	2026-10-02
+CYP2D6	aldy	*5	*5	deletion	Aldy gene deletion	seed	2026-10-02
+CYP2D6	pypgx	*5	*5	deletion	PyPGx gene deletion	seed	2026-10-02
+CYP2D6	*	deletion	*5	deletion	free-text deletion -> *5	seed	2026-10-02
+CYP2D6	*	*1x2	*1xN	duplication	normalize explicit 2-copy dup	seed	2026-10-02
+CYP2D6	*	*1xN	*1xN	synonym	already normalized	seed	2026-10-02
+UGT2B17	*	del	*0	deletion		seed	2026-10-02

@@ -1,0 +1,5 @@
+sample,datatype,bam,bai,vcf
+HG001_wgs,wgs,/data/HG001.bam,/data/HG001.bam.bai,
+NA12878_wes,wes,/data/NA12878.wes.bam,/data/NA12878.wes.bam.bai,
+SAMPLE_array,array,,,/data/SAMPLE.imputed.vcf.gz
+SAMPLE_wgs_withvcf,wgs,/data/S.bam,/data/S.bam.bai,/data/S.deepvariant.vcf.gz
