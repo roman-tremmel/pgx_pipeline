@@ -1,10 +1,9 @@
 // PyPGx (MIT). Star-allele + structural-variant caller.
 //   NGS pipeline : WGS/WES BAM/CRAM  -> run-ngs-pipeline per gene
 //   CHIP pipeline: array/imputed VCF -> run-chip-pipeline per gene
-// Genes are iterated inside the container; results are merged to one TSV.
-
-// Genes PyPGx has genotype/phenotype tables for and that we want in consensus.
-def PYPGX_GENES = 'CYP2D6 CYP2C19 CYP2C9 CYP2B6 CYP3A5 DPYD TPMT NUDT15 UGT1A1 SLCO1B1 GSTM1 GSTT1 CYP2A6 NAT2'
+// Every gene PyPGx implements is run; results are merged to one TSV.
+// The gene list is enumerated from the installed PyPGx at runtime, so it tracks
+// whatever the pinned container version supports.
 
 process PYPGX_NGS {
     tag "$meta.id"
@@ -21,11 +20,12 @@ process PYPGX_NGS {
     def cram = fasta ? "--reference ${fasta}" : ""
     """
     set -euo pipefail
+    # all callable (target) genes implemented by this PyPGx build
+    GENES=\$(python -c "import pypgx; print(' '.join(pypgx.list_genes(mode='target')))")
     echo -e "gene\\tgenotype\\tphenotype\\ttool_detail" > ${meta.id}.pypgx.tsv
-    for GENE in ${PYPGX_GENES}; do
-        # per-gene NGS pipeline; tolerate genes with no model on this build
+    for GENE in \$GENES; do
         if pypgx run-ngs-pipeline \$GENE ${meta.id}_\$GENE \\
-                --variants <(echo) --assembly ${assembly} \\
+                --assembly ${assembly} \\
                 --bam ${bam} ${cram} 2> \$GENE.log; then
             if [ -f ${meta.id}_\$GENE/results.zip ]; then
                 unzip -o -q ${meta.id}_\$GENE/results.zip -d ${meta.id}_\$GENE
@@ -54,11 +54,11 @@ process PYPGX_CHIP {
     tuple val(meta), path("${meta.id}.pypgx.tsv"), emit: calls
 
     script:
-    def genes_chip = 'CYP2C19 CYP2C9 CYP2B6 CYP3A5 DPYD TPMT NUDT15 UGT1A1 SLCO1B1 NAT2'
     """
     set -euo pipefail
+    GENES=\$(python -c "import pypgx; print(' '.join(pypgx.list_genes(mode='target')))")
     echo -e "gene\\tgenotype\\tphenotype\\ttool_detail" > ${meta.id}.pypgx.tsv
-    for GENE in ${genes_chip}; do
+    for GENE in \$GENES; do
         if pypgx run-chip-pipeline \$GENE ${meta.id}_\$GENE ${vcf} \\
                 --assembly ${assembly} 2> \$GENE.log; then
             if [ -f ${meta.id}_\$GENE/results.zip ]; then

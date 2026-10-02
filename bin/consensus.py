@@ -21,12 +21,14 @@ from collections import defaultdict, Counter
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", required=True)
-    ap.add_argument("--genes", required=True, help="comma-separated genes to attempt consensus on")
+    ap.add_argument("--genes", required=True,
+                    help="comma-separated genes to attempt consensus on, or 'all'")
     ap.add_argument("--consensus", required=True)
     ap.add_argument("--discordance", required=True)
     args = ap.parse_args()
 
-    target_genes = {g.strip().upper() for g in args.genes.split(",") if g.strip()}
+    all_genes = args.genes.strip().lower() == "all"
+    target_genes = set() if all_genes else {g.strip().upper() for g in args.genes.split(",") if g.strip()}
 
     # (sample, gene) -> {tool: canonical_diplotype}
     calls = defaultdict(dict)
@@ -47,8 +49,8 @@ def main():
     cons_rows = []
     disc_rows = []
     for (smp, gene), tool_calls in sorted(calls.items()):
-        # only form a consensus for requested genes; others are reported per-tool only
-        attempt = gene in target_genes
+        # form a consensus for every gene ('all') or only the requested set
+        attempt = all_genes or gene in target_genes
         counts = Counter(tool_calls.values())
         n_tools = len(tool_calls)
         top_dip, top_n = counts.most_common(1)[0]
